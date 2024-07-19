@@ -34,3 +34,22 @@ button:hover {
     display: block;
     margin: 20px auto;
 }
+
+#defence-panel {
+    margin: 20px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+
+#wave-info {
+    margin: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+#starting-cash {
+    margin: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
