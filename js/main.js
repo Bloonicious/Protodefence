@@ -10,6 +10,7 @@ function showPlayMenu() {
     document.getElementById('play-menu').classList.remove('hidden');
     document.getElementById('help-menu').classList.add('hidden');
     document.getElementById('game-canvas').classList.add('hidden');
+    loadLevelList();
 }
 
 function showHelp() {
@@ -19,14 +20,14 @@ function showHelp() {
     document.getElementById('game-canvas').classList.add('hidden');
 }
 
-function startSingleplayer() {
+function startSingleplayer(level) {
     document.getElementById('main-menu').classList.add('hidden');
     document.getElementById('play-menu').classList.add('hidden');
     document.getElementById('help-menu').classList.add('hidden');
     document.getElementById('game-canvas').classList.remove('hidden');
 
-    // Initialize game with level data
-    loadLevelData('data/levels.json');
+    // Initialize game with selected level data
+    loadLevelData(`data/levels/${level}.json`);
 }
 
 function startEndless() {
@@ -39,30 +40,48 @@ function startEndless() {
     startEndlessMode();
 }
 
+function loadLevelList() {
+    fetch('data/levels.json')
+        .then(response => response.json())
+        .then(data => {
+            const levelsList = document.getElementById('levels-list');
+            levelsList.innerHTML = '';
+            Object.keys(data).forEach(level => {
+                const button = document.createElement('button');
+                button.innerText = level;
+                button.onclick = () => startSingleplayer(level);
+                levelsList.appendChild(button);
+            });
+        });
+}
+
 function loadLevelData(url) {
     fetch(url)
         .then(response => response.json())
         .then(data => {
-            console.log('Levels:', data);
+            console.log('Level Data:', data);
             // Initialize the game with levels data
             initializeGame(data);
         });
 }
 
-function initializeGame(levels) {
-    // Example of loading defences and monsters for level1
+function initializeGame(levelData) {
+    // Example of loading defences and monsters for a level
     let defences = [];
     let monsters = [];
 
-    // Load defences
+    // Load defences and monsters based on level configuration
     loadDefences(['BoomCannon'], defences);
-
-    // Load monsters
-    loadMonsters(['Goblin'], monsters);
+    loadMonsters(['Goblin', 'Orc'], monsters);
 
     // Continue with initializing the game with defences and monsters
     console.log('Defences:', defences);
     console.log('Monsters:', monsters);
+
+    // Further initialization like paths, starting cash, etc.
+    initializePaths(levelData.paths);
+    initializeDefencePaths(levelData.placeableDefencePaths);
+    setStartingCash(levelData.startingCash);
 }
 
 function loadDefences(defenceTypes, defences) {
@@ -106,6 +125,21 @@ function loadMonsters(monsterTypes, monsters) {
                 monsters.push(monster);
             });
     });
+}
+
+function initializePaths(paths) {
+    // Logic to initialize paths for the level
+    console.log('Paths:', paths);
+}
+
+function initializeDefencePaths(defencePaths) {
+    // Logic to initialize placeable defence paths
+    console.log('Defence Paths:', defencePaths);
+}
+
+function setStartingCash(cash) {
+    // Logic to set the starting cash for the player
+    console.log('Starting Cash:', cash);
 }
 
 function startEndlessMode() {
