@@ -10,7 +10,9 @@
         ],
         "startingCash": 100,
         "monsters": ["Goblin", "Orc"],
-        "defences": ["BoomCannon"]
+        "defences": ["BoomCannon"],
+        "waves": 5,
+        "waveDensity": [1, 2, 3, 4, 8]
     },
     "level2": {
         "paths": [
@@ -23,6 +25,23 @@
         ],
         "startingCash": 150,
         "monsters": ["Goblin", "Orc"],
-        "defences": ["BoomCannon"]
+        "defences": ["BoomCannon"],
+        "waves": 6,
+        "waveDensity": [2, 3, 4, 5, 6, 7]
+    },
+    "level3": {
+        "paths": [
+            {"x": 0, "y": 0},
+            {"x": 300, "y": 300}
+        ],
+        "placeableDefencePaths": [
+            {"x": 150, "y": 150},
+            {"x": 350, "y": 350}
+        ],
+        "startingCash": 200,
+        "monsters": ["Goblin", "Orc"],
+        "defences": ["BoomCannon"],
+        "waves": 8,
+        "waveDensity": [1, 2, 3, 4, 5, 6, 7, 8]
     }
 }
