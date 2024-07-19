@@ -51,7 +51,7 @@ function loadLevelList() {
         .then(data => {
             const levelsList = document.getElementById('levels-list');
             levelsList.innerHTML = '';
-            Object.keys(data).forEach(level => {
+            data.levels.forEach(level => {
                 const button = document.createElement('button');
                 button.innerText = level;
                 button.onclick = () => startSingleplayer(level);
