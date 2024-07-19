@@ -1,0 +1,6 @@
+{
+    "type": "BoomCannon",
+    "damage": 50,
+    "range": 100,
+    "cost": 75
+}
