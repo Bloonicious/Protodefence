@@ -71,8 +71,8 @@ function initializeGame(levelData) {
     let monsters = [];
 
     // Load defences and monsters based on level configuration
-    loadDefences(['BoomCannon'], defences);
-    loadMonsters(['Goblin', 'Orc'], monsters);
+    loadDefences(levelData.defences, defences);
+    loadMonsters(levelData.monsters, monsters);
 
     // Continue with initializing the game with defences and monsters
     console.log('Defences:', defences);
@@ -82,6 +82,9 @@ function initializeGame(levelData) {
     initializePaths(levelData.paths);
     initializeDefencePaths(levelData.placeableDefencePaths);
     setStartingCash(levelData.startingCash);
+
+    // Display available defences
+    displayAvailableDefences(defences);
 }
 
 function loadDefences(defenceTypes, defences) {
@@ -145,4 +148,19 @@ function setStartingCash(cash) {
 function startEndlessMode() {
     console.log('Starting endless mode');
     // Initialize endless mode
+}
+
+function displayAvailableDefences(defences) {
+    const defencePanel = document.getElementById('defence-panel');
+    defencePanel.innerHTML = '';
+    defences.forEach(defence => {
+        const div = document.createElement('div');
+        div.innerText = defence.type;
+        defencePanel.appendChild(div);
+    });
+}
+
+function startWave() {
+    console.log('Starting wave');
+    // Logic to start a wave
 }
