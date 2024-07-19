@@ -8,7 +8,8 @@
             {"x": 50, "y": 50},
             {"x": 150, "y": 150}
         ],
-        "startingCash": 100
+        "startingCash": 100,
+        "monsters": ["Goblin", "Orc"]
     },
     "level2": {
         "paths": [
@@ -19,6 +20,7 @@
             {"x": 100, "y": 100},
             {"x": 250, "y": 250}
         ],
-        "startingCash": 150
+        "startingCash": 150,
+        "monsters": ["Goblin", "Orc"]
     }
 }
