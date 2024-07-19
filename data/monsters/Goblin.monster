@@ -1,5 +1,9 @@
 {
     "type": "Goblin",
     "health": 100,
-    "speed": 2
+    "speed": 1,
+    "radius": 5,
+    "children": [],
+    "sprite": "goblin",
+    "immunities": []
 }
