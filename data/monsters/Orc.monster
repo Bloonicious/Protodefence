@@ -1,0 +1,9 @@
+{
+    "type": "Orc",
+    "health": 150,
+    "speed": 0.67,
+    "radius": 8,
+    "children": [],
+    "sprite": "orc",
+    "immunities": []
+}
