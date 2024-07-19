@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Protodefence</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div id="main-menu">
+        <h1>Protodefence</h1>
+        <button onclick="showPlayMenu()">Play</button>
+        <button onclick="showHelp()">Help</button>
+    </div>
+
+    <div id="play-menu" class="hidden">
+        <h2>Play</h2>
+        <button onclick="startSingleplayer()">Singleplayer</button>
+        <button onclick="startEndless()">Endless</button>
+        <button onclick="showMainMenu()">Back</button>
+    </div>
+
+    <div id="help-menu" class="hidden">
+        <h2>Help</h2>
+        <p>Instructions go here...</p>
+        <button onclick="showMainMenu()">Back</button>
+    </div>
+
+    <div id="game-canvas" class="hidden">
+        <canvas id="canvas"></canvas>
+        <button onclick="showPlayMenu()">Back</button>
+    </div>
+
+    <script src="js/game.js"></script>
+</body>
+</html>
