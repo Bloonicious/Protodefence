@@ -1,0 +1,24 @@
+{
+    "level1": {
+        "paths": [
+            {"x": 0, "y": 0},
+            {"x": 100, "y": 100}
+        ],
+        "placeableDefencePaths": [
+            {"x": 50, "y": 50},
+            {"x": 150, "y": 150}
+        ],
+        "startingCash": 100
+    },
+    "level2": {
+        "paths": [
+            {"x": 0, "y": 0},
+            {"x": 200, "y": 200}
+        ],
+        "placeableDefencePaths": [
+            {"x": 100, "y": 100},
+            {"x": 250, "y": 250}
+        ],
+        "startingCash": 150
+    }
+}
