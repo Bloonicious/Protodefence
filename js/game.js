@@ -1,3 +1,8 @@
+let currentWave = 0;
+let maxWaves = 0;
+let waveDensity = [];
+let currentLevelData = {};
+
 function showMainMenu() {
     document.getElementById('main-menu').classList.remove('hidden');
     document.getElementById('play-menu').classList.add('hidden');
@@ -66,6 +71,11 @@ function loadLevelData(url) {
 }
 
 function initializeGame(levelData) {
+    currentLevelData = levelData;
+    currentWave = 0;
+    maxWaves = levelData.waves;
+    waveDensity = levelData.waveDensity;
+
     // Example of loading defences and monsters for a level
     let defences = [];
     let monsters = [];
@@ -85,6 +95,9 @@ function initializeGame(levelData) {
 
     // Display available defences
     displayAvailableDefences(defences);
+
+    // Update wave info display
+    updateWaveInfo();
 }
 
 function loadDefences(defenceTypes, defences) {
@@ -161,6 +174,32 @@ function displayAvailableDefences(defences) {
 }
 
 function startWave() {
-    console.log('Starting wave');
-    // Logic to start a wave
+    if (currentWave < maxWaves) {
+        currentWave++;
+        const monsterCount = waveDensity[currentWave - 1];
+        console.log(`Starting wave ${currentWave} with ${monsterCount} monsters`);
+        // Logic to spawn monsters based on waveDensity[currentWave - 1]
+        spawnMonsters(monsterCount);
+        updateWaveInfo();
+    } else {
+        console.log('All waves completed');
+    }
+}
+
+function spawnMonsters(count) {
+    const monsters = currentLevelData.monsters;
+    for (let i = 0; i < count; i++) {
+        const monsterType = monsters[i % monsters.length];
+        fetch(`data/monsters/${monsterType}.monster`)
+            .then(response => response.json())
+            .then(monsterData => {
+                console.log('Spawning monster:', monsterData);
+                // Logic to spawn a monster in the game
+            });
+    }
+}
+
+function updateWaveInfo() {
+    const waveInfo = document.getElementById('wave-info');
+    waveInfo.innerText = `Wave ${currentWave}/${maxWaves}`;
 }
