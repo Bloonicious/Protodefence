@@ -45,7 +45,44 @@ function loadLevelData(url) {
         .then(data => {
             console.log('Levels:', data);
             // Initialize the game with levels data
+            initializeGame(data);
         });
+}
+
+function initializeGame(levels) {
+    // Example of loading defences and monsters for level1
+    let defences = [];
+    let monsters = [];
+
+    // Load defences
+    loadDefences(['BoomCannon'], defences);
+
+    // Load monsters
+    loadMonsters(['Goblin'], monsters);
+
+    // Continue with initializing the game with defences and monsters
+    console.log('Defences:', defences);
+    console.log('Monsters:', monsters);
+}
+
+function loadDefences(defenceTypes, defences) {
+    defenceTypes.forEach(type => {
+        fetch(`data/defences/${type}.defence`)
+            .then(response => response.json())
+            .then(data => {
+                defences.push(data);
+            });
+    });
+}
+
+function loadMonsters(monsterTypes, monsters) {
+    monsterTypes.forEach(type => {
+        fetch(`data/monsters/${type}.monster`)
+            .then(response => response.json())
+            .then(data => {
+                monsters.push(data);
+            });
+    });
 }
 
 function startEndlessMode() {
