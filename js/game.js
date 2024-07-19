@@ -62,11 +62,19 @@ function loadLevelList() {
 
 function loadLevelData(url) {
     fetch(url)
-        .then(response => response.json())
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            return response.json();
+        })
         .then(data => {
             console.log('Level Data:', data);
-            // Initialize the game with levels data
             initializeGame(data);
+        })
+        .catch(error => {
+            console.error('Error loading level data:', error);
+            showPlayMenu();
         });
 }
 
@@ -76,33 +84,30 @@ function initializeGame(levelData) {
     maxWaves = levelData.waves;
     waveDensity = levelData.waveDensity;
 
-    // Example of loading defences and monsters for a level
     let defences = [];
     let monsters = [];
 
-    // Load defences and monsters based on level configuration
-    loadDefences(levelData.defences, defences);
-    loadMonsters(levelData.monsters, monsters);
+    loadDefences(levelData.defences, defences)
+        .then(() => {
+            loadMonsters(levelData.monsters, monsters)
+                .then(() => {
+                    console.log('Defences:', defences);
+                    console.log('Monsters:', monsters);
+                    
+                    initializePaths(levelData.paths);
+                    initializeDefencePaths(levelData.placeableDefencePaths);
+                    setStartingCash(defences);
 
-    // Continue with initializing the game with defences and monsters
-    console.log('Defences:', defences);
-    console.log('Monsters:', monsters);
+                    displayAvailableDefences(defences);
 
-    // Further initialization like paths, starting cash, etc.
-    initializePaths(levelData.paths);
-    initializeDefencePaths(levelData.placeableDefencePaths);
-    setStartingCash(levelData.startingCash);
-
-    // Display available defences
-    displayAvailableDefences(defences);
-
-    // Update wave info display
-    updateWaveInfo();
+                    updateWaveInfo();
+                });
+        });
 }
 
 function loadDefences(defenceTypes, defences) {
-    defenceTypes.forEach(type => {
-        fetch(`data/defences/${type}.defence`)
+    return Promise.all(defenceTypes.map(type => {
+        return fetch(`data/defences/${type}.defence`)
             .then(response => response.json())
             .then(data => {
                 const defence = {
@@ -121,12 +126,12 @@ function loadDefences(defenceTypes, defences) {
                 };
                 defences.push(defence);
             });
-    });
+    }));
 }
 
 function loadMonsters(monsterTypes, monsters) {
-    monsterTypes.forEach(type => {
-        fetch(`data/monsters/${type}.monster`)
+    return Promise.all(monsterTypes.map(type => {
+        return fetch(`data/monsters/${type}.monster`)
             .then(response => response.json())
             .then(data => {
                 const monster = {
@@ -140,27 +145,25 @@ function loadMonsters(monsterTypes, monsters) {
                 };
                 monsters.push(monster);
             });
-    });
+    }));
 }
 
 function initializePaths(paths) {
-    // Logic to initialize paths for the level
     console.log('Paths:', paths);
 }
 
 function initializeDefencePaths(defencePaths) {
-    // Logic to initialize placeable defence paths
     console.log('Defence Paths:', defencePaths);
 }
 
-function setStartingCash(cash) {
-    // Logic to set the starting cash for the player
-    console.log('Starting Cash:', cash);
+function setStartingCash(defences) {
+    let startingCash = defences.reduce((sum, defence) => sum + defence.cost, 0);
+    document.getElementById('starting-cash').innerText = `Starting Cash: $${startingCash.toLocaleString('en-US')}`;
+    console.log('Starting Cash:', startingCash);
 }
 
 function startEndlessMode() {
     console.log('Starting endless mode');
-    // Initialize endless mode
 }
 
 function displayAvailableDefences(defences) {
@@ -168,7 +171,10 @@ function displayAvailableDefences(defences) {
     defencePanel.innerHTML = '';
     defences.forEach(defence => {
         const div = document.createElement('div');
-        div.innerText = defence.type;
+        div.innerHTML = `
+            <div>${defence.type}</div>
+            <div>Cost: $${defence.cost.toLocaleString('en-US')}</div>
+        `;
         defencePanel.appendChild(div);
     });
 }
@@ -178,7 +184,6 @@ function startWave() {
         currentWave++;
         const monsterCount = waveDensity[currentWave - 1];
         console.log(`Starting wave ${currentWave} with ${monsterCount} monsters`);
-        // Logic to spawn monsters based on waveDensity[currentWave - 1]
         spawnMonsters(monsterCount);
         updateWaveInfo();
     } else {
@@ -194,7 +199,6 @@ function spawnMonsters(count) {
             .then(response => response.json())
             .then(monsterData => {
                 console.log('Spawning monster:', monsterData);
-                // Logic to spawn a monster in the game
             });
     }
 }
