@@ -70,7 +70,21 @@ function loadDefences(defenceTypes, defences) {
         fetch(`data/defences/${type}.defence`)
             .then(response => response.json())
             .then(data => {
-                defences.push(data);
+                const defence = {
+                    type: data.type,
+                    damage: data.damage,
+                    range: data.range,
+                    cost: data.cost,
+                    targetingMode: data.targetingMode,
+                    projectile: data.projectile.map(proj => ({
+                        image: `data/images/${proj.image}`,
+                        speed: proj.speed,
+                        hitbox: proj.hitbox
+                    })),
+                    statusEffects: data.statusEffects,
+                    sprite: `data/images/${data.sprite}.png`
+                };
+                defences.push(defence);
             });
     });
 }
@@ -80,7 +94,16 @@ function loadMonsters(monsterTypes, monsters) {
         fetch(`data/monsters/${type}.monster`)
             .then(response => response.json())
             .then(data => {
-                monsters.push(data);
+                const monster = {
+                    type: data.type,
+                    health: data.health,
+                    speed: data.speed,
+                    radius: data.radius,
+                    children: data.children.map(child => `data/monsters/${child}.monster`),
+                    sprite: `data/images/${data.sprite}`,
+                    immunities: data.immunities
+                };
+                monsters.push(monster);
             });
     });
 }
