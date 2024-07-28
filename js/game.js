@@ -2,6 +2,9 @@ let currentWave = 0;
 let maxWaves = 0;
 let waveDensity = [];
 let currentLevelData = {};
+let defences = [];
+let monsters = [];
+let placedDefences = [];
 
 function showMainMenu() {
     document.getElementById('main-menu').classList.remove('hidden');
@@ -84,8 +87,9 @@ function initializeGame(levelData) {
     maxWaves = levelData.waves;
     waveDensity = levelData.waveDensity;
 
-    let defences = [];
-    let monsters = [];
+    defences = [];
+    monsters = [];
+    placedDefences = [];
 
     loadDefences(levelData.defences, defences)
         .then(() => {
@@ -96,11 +100,12 @@ function initializeGame(levelData) {
                     
                     initializePaths(levelData.paths);
                     initializeDefencePaths(levelData.placeableDefencePaths);
-                    setStartingCash(defences);
+                    setStartingCash(levelData.startingCash);
 
                     displayAvailableDefences(defences);
 
                     updateWaveInfo();
+                    initializeGrid();
                 });
         });
 }
@@ -156,8 +161,7 @@ function initializeDefencePaths(defencePaths) {
     console.log('Defence Paths:', defencePaths);
 }
 
-function setStartingCash(defences) {
-    let startingCash = defences.reduce((sum, defence) => sum + defence.cost, 0);
+function setStartingCash(startingCash) {
     document.getElementById('starting-cash').innerText = `Starting Cash: $${startingCash.toLocaleString('en-US')}`;
     console.log('Starting Cash:', startingCash);
 }
@@ -171,12 +175,70 @@ function displayAvailableDefences(defences) {
     defencePanel.innerHTML = '';
     defences.forEach(defence => {
         const div = document.createElement('div');
+        div.className = 'draggable-defence';
+        div.draggable = true;
+        div.ondragstart = (event) => drag(event, defence.type);
         div.innerHTML = `
             <div>${defence.type}</div>
             <div>Cost: $${defence.cost.toLocaleString('en-US')}</div>
         `;
         defencePanel.appendChild(div);
     });
+}
+
+function initializeGrid() {
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    const cellSize = 50;
+
+    // Create grid
+    for (let x = 0; x < canvas.width; x += cellSize) {
+        for (let y = 0; y < canvas.height; y += cellSize) {
+            context.strokeRect(x, y, cellSize, cellSize);
+        }
+    }
+
+    // Add drop zones
+    canvas.ondrop = (event) => drop(event);
+    canvas.ondragover = (event) => allowDrop(event);
+}
+
+function allowDrop(event) {
+    event.preventDefault();
+}
+
+function drag(event, defenceType) {
+    event.dataTransfer.setData("defenceType", defenceType);
+}
+
+function drop(event) {
+    event.preventDefault();
+    const defenceType = event.dataTransfer.getData("defenceType");
+    const x = event.offsetX;
+    const y = event.offsetY;
+
+    const cellX = Math.floor(x / 50) * 50;
+    const cellY = Math.floor(y / 50) * 50;
+
+    placeDefence(defenceType, cellX, cellY);
+}
+
+function placeDefence(defenceType, x, y) {
+    const defence = defences.find(d => d.type === defenceType);
+    if (defence) {
+        placedDefences.push({ defence, x, y });
+        drawDefence(defence, x, y);
+    }
+}
+
+function drawDefence(defence, x, y) {
+    const canvas = document.getElementById('canvas');
+    const context = canvas.getContext('2d');
+    const image = new Image();
+    image.src = defence.sprite;
+    image.onload = () => {
+        context.drawImage(image, x, y, 50, 50);
+    };
 }
 
 function startWave() {
@@ -199,6 +261,7 @@ function spawnMonsters(count) {
             .then(response => response.json())
             .then(monsterData => {
                 console.log('Spawning monster:', monsterData);
+                // Initialize monster on path
             });
     }
 }
@@ -207,3 +270,14 @@ function updateWaveInfo() {
     const waveInfo = document.getElementById('wave-info');
     waveInfo.innerText = `Wave ${currentWave}/${maxWaves}`;
 }
+
+// Game loop
+function gameLoop() {
+    // Update monster positions
+    // Check for collisions with defences
+    // Render game state
+    requestAnimationFrame(gameLoop);
+}
+
+// Start the game loop
+gameLoop();
